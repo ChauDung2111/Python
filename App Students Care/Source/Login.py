@@ -70,7 +70,7 @@ def login_acc():
             login_user = username
             break
     if login_user:
-        msg_lbl.config(text="✅ ok!", fg="green")
+        msg_lbl.config(text="✅ Login thành công!", fg="green")
         for user in users:
             users[user]["remember"] = False  # reset tất cả
         users[login_user]["remember"] = is_checked.get()
