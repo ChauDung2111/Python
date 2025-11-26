@@ -20,9 +20,7 @@ def load_user_courses(username):
             data = json.load(f)
         except:
             data = {}
-    if not isinstance(data, dict):
-        data = {}
-    return data.get(username, [])
+    return data.get(username, {})
 
 def save_user_courses(username, courses_list):
     _ensure_study_file()
@@ -31,8 +29,6 @@ def save_user_courses(username, courses_list):
             data = json.load(f)
         except:
             data = {}
-    if not isinstance(data, dict):
-        data = {}
     data[username] = courses_list
     with open(LEARNING_STATISTICS, "w", encoding="utf8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
@@ -68,9 +64,9 @@ def generate_feedback(username ,score_data):
     try:
         with open(LEARNING_STATISTICS, 'r', encoding="utf8") as f:
             data = json.load(f)
-            user_data = data.get(username, [])
+            user_data = data.get(username, {})
             if user_data:
-                gpa = float(user_data[-1].get("gpa", 0))
+                gpa = float(user_data.get("gpa", 0))
             else:
                 gpa = 0.0
     except:
@@ -195,9 +191,10 @@ def open_learning_statistics(root, username):
 
     # ========================================================== Load information on the treeview ==========================================================
     courses = load_user_courses(username)  # Get information by username
-    school_years = sorted({c.get("school_year") for c in courses})
-    semesters = sorted({c.get("semester") for c in courses})
-    all_data = []
+    courses_list = [courses]
+    school_years = sorted({c.get("school_year") for c in courses_list})
+    semesters = sorted({c.get("semester") for c in courses_list})
+    all_data = {}
     for year in school_years:
         for sem in semesters:
             semesters_course = [c for c in courses if c.get("school_year")==year and c.get("semester")==sem]
@@ -210,7 +207,7 @@ def open_learning_statistics(root, username):
             rank = "Xuất Sắc" if gpa_sem >= 3.6 else "Giỏi" if gpa_sem >= 3.2 else "Khá" if gpa_sem >= 2.5 else "Trung bình"
             tree.insert("", "end", values=(year, sem, gpa_sem, pass_rate, rank))
             stat_item = {"school_year": year, "semester": sem, "gpa": gpa_sem, "pass_rate": pass_rate, "rank": rank}
-            all_data.append(stat_item)
+
     save_user_courses(username, all_data)
     # ==========================================================Frame chart==========================================================
     chart_frame = Frame(frame_content, bg="#f5f5f5")

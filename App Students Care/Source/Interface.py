@@ -42,7 +42,7 @@ def open_interface(pw_win, username):
         "bd": 2,
     }
     # ====Icon====
-    icon_path = r"C:\Users\Nga\Desktop\APP STUDENTS CARE\Images\icon_students_care.png"
+    icon_path = r"E:\Python\App Students Care\Images\icon_students_care.png"
     icon = Image.open(icon_path).resize((32, 32), Image.LANCZOS)
     icon_tk = ImageTk.PhotoImage(icon)
     root.iconphoto(True, icon_tk)
